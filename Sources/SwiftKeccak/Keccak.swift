@@ -35,6 +35,16 @@ public func sha3Final256(_ string: String) -> Data {
 }
 
 extension Data {
+    public struct HexEncodingOptions: OptionSet {
+        public let rawValue: Int
+
+        public static let upperCase = HexEncodingOptions(rawValue: 1 << 0)
+
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+    }
+
     public func keccak() -> Data {
         return keccak256(self)
     }
@@ -43,6 +53,10 @@ extension Data {
         return sha3Final256(self)
     }
 
+    public func hexEncodedString(options: HexEncodingOptions = []) -> String {
+        let format = options.contains(.upperCase) ? "%02hhX" : "%02hhx"
+        return self.map { String(format: format, $0) }.joined()
+    }
 }
 
 extension String {
